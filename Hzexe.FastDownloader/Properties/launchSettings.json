@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hzexe.FastDownloader": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
