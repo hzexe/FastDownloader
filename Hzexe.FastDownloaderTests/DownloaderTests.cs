@@ -69,7 +69,6 @@ namespace Hzexe.FastDownloader.Tests
 
             IntPtr ptr = downloader.GetDownloadData(out var length);
             Assert.IsTrue(length > 0);
-
         }
 
        

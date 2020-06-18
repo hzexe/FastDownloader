@@ -21,11 +21,10 @@ namespace Hzexe.FastDownloader
         {
             PooledConnectionLifetime = TimeSpan.FromMinutes(10),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
-            MaxConnectionsPerServer = 4,
+            MaxConnectionsPerServer = 16,
             AllowAutoRedirect = true,
             //UseProxy =true,
             //Proxy= new WebProxy("127.0.0.1", 8888),
-
         };
 
         public void Dispose()
@@ -34,21 +33,26 @@ namespace Hzexe.FastDownloader
                 Marshal.FreeHGlobal(ptr);
         }
 
+        /// <summary>
+        /// download
+        /// </summary>
+        /// <param name="maxConnectionsPerHost">mac connections per host</param>
+        /// <param name="mirrors">link of mirrors</param>
         public void Download(int maxConnectionsPerHost, params string[] mirrors)
         {
             //ServicePointManager.DefaultConnectionLimit = 500;
             var client = new HttpClient(socketsHandler, false);
+
+            client.DefaultRequestHeaders.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 2);
+            var response = client.GetAsync(mirrors[0], HttpCompletionOption.ResponseHeadersRead).Result;
+            if (!response.IsSuccessStatusCode)
+                throw new System.Net.Http.HttpRequestException("First mirrors return " + response.StatusCode);
+            if (response.StatusCode != HttpStatusCode.PartialContent)
             {
-                client.DefaultRequestHeaders.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 2);
-                var response = client.GetAsync(mirrors[0], HttpCompletionOption.ResponseHeadersRead).Result;
-                if (!response.IsSuccessStatusCode)
-                    throw new System.Net.Http.HttpRequestException("First mirrors return " + response.StatusCode);
-                if (response.StatusCode != HttpStatusCode.PartialContent)
-                {
-                    throw new System.Net.Http.HttpRequestException("not  PartialContent" + response.StatusCode);
-                }
-                fileSize = int.Parse(response.Content.Headers.GetValues("Content-Range").First().Split('/').Last());
+                throw new System.Net.Http.HttpRequestException("not  PartialContent" + response.StatusCode);
             }
+            fileSize = int.Parse(response.Content.Headers.GetValues("Content-Range").First().Split('/').Last());
+
             //output.SetLength(fileSize);
             if (IntPtr.Zero != ptr)
                 Marshal.FreeHGlobal(ptr);
@@ -88,13 +92,20 @@ namespace Hzexe.FastDownloader
             WaitHandle.WaitAll(events);
             Array.ForEach(sources, x => x.Dispose());
         }
-
+        /// <summary>
+        /// get download result of ptr
+        /// </summary>
+        /// <param name="length">data length</param>
+        /// <returns>The ptr of data begin</returns>
         public IntPtr GetDownloadData(out int length)
         {
             length = fileSize;
             return ptr;
         }
-
+        /// <summary>
+        /// get download data of span
+        /// </summary>
+        /// <returns></returns>
         public Span<byte> GetDownloadData()
         {
             unsafe
@@ -130,11 +141,11 @@ namespace Hzexe.FastDownloader
             }
             catch (AggregateException ae)
             {
-
+                //todo:
             }
             catch (Exception ex)
             {
-
+                //todo:
             }
 
         }
