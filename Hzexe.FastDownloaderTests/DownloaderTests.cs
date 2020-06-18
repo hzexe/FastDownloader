@@ -20,21 +20,10 @@ namespace Hzexe.FastDownloader.Tests
         }
 
         [TestCleanup]
+        [TestMethod()]
         public void Dispose()
         {
             downloader.Dispose();
-        }
-
-        [TestMethod()]
-        public void DisposeTest()
-        {
-            downloader.Dispose();
-
-            downloader = new Downloader();
-            DownloadAsyncTest();
-            downloader.Dispose();
-
-            Assert.IsTrue(true);
         }
 
         [TestMethod()]
