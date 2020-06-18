@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29827.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hzexe.FastDownloader", "Hzexe.FastDownloader\Hzexe.FastDownloader.csproj", "{030C36FF-CBD0-4249-A4E2-4ECF67A01072}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hzexe.FastDownloader", "Hzexe.FastDownloader\Hzexe.FastDownloader.csproj", "{030C36FF-CBD0-4249-A4E2-4ECF67A01072}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hzexe.FastDownloaderTests", "Hzexe.FastDownloaderTests\Hzexe.FastDownloaderTests.csproj", "{1A9B4344-DFCC-490C-9CA6-584CB96D113D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hzexe.FastDownloaderTests", "Hzexe.FastDownloaderTests\Hzexe.FastDownloaderTests.csproj", "{1A9B4344-DFCC-490C-9CA6-584CB96D113D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E6214D33-E194-4136-B9F1-CA0847B150F4}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
