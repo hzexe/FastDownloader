@@ -1,9 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Title>Fast download file with multi-thread from multiple mirrors</Title>
+    <Version>0.1.1</Version>
+    <AssemblyVersion>0.1.1.*</AssemblyVersion>
+    <PackageId>Hzexe.FastDownloader</PackageId>
+    <Description>Fast download file with multi-thread from multiple mirrors</Description>
+    <PackageTags>download,mirrors,multi-thread</PackageTags>
+    <PackageProjectUrl>https://github.com/hzexe/Hzexe.FastDownloader</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hzexe/Hzexe.FastDownloader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Apache License 2.0</Copyright>
+    <Deterministic>False</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin/$(Configuration)/$(AssemblyName).xml</DocumentationFile>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/hzexe/Hzexe.FastDownloader/master/LICENSE</PackageLicenseUrl>
+
   </PropertyGroup>
-
-
 </Project>
