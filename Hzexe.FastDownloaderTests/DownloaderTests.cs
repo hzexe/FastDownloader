@@ -20,7 +20,6 @@ namespace Hzexe.FastDownloader.Tests
         }
 
         [TestCleanup]
-        [TestMethod()]
         public void Dispose()
         {
             downloader.Dispose();

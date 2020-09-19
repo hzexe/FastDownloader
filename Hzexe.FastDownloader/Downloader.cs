@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,7 +22,7 @@ namespace Hzexe.FastDownloader
         {
             PooledConnectionLifetime = TimeSpan.FromMinutes(10),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
-            MaxConnectionsPerServer = 16,
+            MaxConnectionsPerServer = 4,
             AllowAutoRedirect = true,
             //UseProxy =true,
             //Proxy= new WebProxy("127.0.0.1", 8888),
@@ -33,6 +34,47 @@ namespace Hzexe.FastDownloader
                 Marshal.FreeHGlobal(ptr);
         }
 
+        private async Task<int> GetFileLengthAsync(string url)
+        {
+            using (var client = new HttpClient(socketsHandler, false))
+            {
+                client.DefaultRequestHeaders.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 2);
+                var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                if (!response.IsSuccessStatusCode)
+                    return -1;
+                if (response.StatusCode != HttpStatusCode.PartialContent)
+                {
+                    return -2;
+                }
+                this.fileSize = int.Parse(response.Content.Headers.GetValues("Content-Range").First().Split('/').Last());
+                return fileSize;
+            }
+        }
+
+
+
+        private int GetFileLength(string[] mirrors)
+        {
+            var tasks = mirrors.Select(x => GetFileLengthAsync(x)).ToArray();
+            int waitCount = 0;
+            while ((waitCount=Task.WaitAny(tasks)) >= 0)
+            {
+                var completedTasks = tasks.Where(x => x.IsCompleted).ToArray();
+                var t = completedTasks.FirstOrDefault(x => x.Result > 0);
+                if (t != null)
+                    return t.Result;
+                else
+                {
+                    tasks = tasks.Except(completedTasks).ToArray();
+                    if (tasks.Length == 0)
+                        break;
+                }
+            }
+            throw new Exception("can't get file length");
+        }
+
+
+
         /// <summary>
         /// download
         /// </summary>
@@ -40,18 +82,7 @@ namespace Hzexe.FastDownloader
         /// <param name="mirrors">link of mirrors</param>
         public void Download(int maxConnectionsPerHost, params string[] mirrors)
         {
-            //ServicePointManager.DefaultConnectionLimit = 500;
-            var client = new HttpClient(socketsHandler, false);
-
-            client.DefaultRequestHeaders.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 2);
-            var response = client.GetAsync(mirrors[0], HttpCompletionOption.ResponseHeadersRead).Result;
-            if (!response.IsSuccessStatusCode)
-                throw new System.Net.Http.HttpRequestException("First mirrors return " + response.StatusCode);
-            if (response.StatusCode != HttpStatusCode.PartialContent)
-            {
-                throw new System.Net.Http.HttpRequestException("not  PartialContent" + response.StatusCode);
-            }
-            fileSize = int.Parse(response.Content.Headers.GetValues("Content-Range").First().Split('/').Last());
+            fileSize = GetFileLength(mirrors);
 
             //output.SetLength(fileSize);
             if (IntPtr.Zero != ptr)
