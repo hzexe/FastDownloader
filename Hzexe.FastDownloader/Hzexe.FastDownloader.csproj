@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>Fast download file with multi-thread from multiple mirrors</Title>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <AssemblyVersion>0.1.1.*</AssemblyVersion>
     <PackageId>Hzexe.FastDownloader</PackageId>
     <Description>Fast download file with multi-thread from multiple mirrors</Description>
